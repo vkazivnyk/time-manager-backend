@@ -153,7 +153,7 @@ namespace TimeManageData.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tasks",
+                name: "UserTasks",
                 columns: table => new
                 {
                     Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
@@ -165,9 +165,9 @@ namespace TimeManageData.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tasks", x => x.Id);
+                    table.PrimaryKey("PK_UserTasks", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Tasks_AspNetUsers_UserId",
+                        name: "FK_UserTasks_AspNetUsers_UserId",
                         column: x => x.UserId,
                         principalTable: "AspNetUsers",
                         principalColumn: "Id",
@@ -214,8 +214,8 @@ namespace TimeManageData.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tasks_UserId",
-                table: "Tasks",
+                name: "IX_UserTasks_UserId",
+                table: "UserTasks",
                 column: "UserId");
         }
 
@@ -237,7 +237,7 @@ namespace TimeManageData.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Tasks");
+                name: "UserTasks");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");

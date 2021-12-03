@@ -10,7 +10,7 @@ using TimeManageData.DbContexts;
 namespace TimeManageData.Migrations
 {
     [DbContext(typeof(TimeManagerDbContext))]
-    [Migration("20211203200020_InitialMigration")]
+    [Migration("20211203202924_InitialMigration")]
     partial class InitialMigration
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -217,7 +217,7 @@ namespace TimeManageData.Migrations
                     b.ToTable("AspNetUsers");
                 });
 
-            modelBuilder.Entity("TimeManageData.Models.Task", b =>
+            modelBuilder.Entity("TimeManageData.Models.UserTask", b =>
                 {
                     b.Property<string>("Id")
                         .HasColumnType("nvarchar(450)");
@@ -243,7 +243,7 @@ namespace TimeManageData.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("Tasks");
+                    b.ToTable("UserTasks");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
@@ -297,7 +297,7 @@ namespace TimeManageData.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("TimeManageData.Models.Task", b =>
+            modelBuilder.Entity("TimeManageData.Models.UserTask", b =>
                 {
                     b.HasOne("TimeManageData.Models.ApplicationUser", "ApplicationUser")
                         .WithMany("Tasks")
