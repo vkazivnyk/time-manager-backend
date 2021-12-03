@@ -9,9 +9,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreRateLimit;
 using GraphQL.Server.Ui.Voyager;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using TimeManageData.DbContexts;
 using TimeManagerWebAPI.GraphQL;
 using TimeManagerWebAPI.GraphQL.Tasks;
+using TimeManagerWebAPI.GraphQL.Users;
 
 namespace TimeManagerWebAPI
 {
@@ -26,10 +29,17 @@ namespace TimeManagerWebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddPooledDbContextFactory<TimeManagerDbContext>(options =>
+            {
+                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=time-manager;Trusted_Connection=True;");
+            });
+
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
-                .AddType<TaskType>();
+                .AddType<UserTaskType>()
+                .AddType<UserTaskPayloadType>()
+                .AddType<ApplicationUserType>();
 
             services.AddMemoryCache();
 

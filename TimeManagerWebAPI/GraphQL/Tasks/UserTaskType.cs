@@ -21,7 +21,7 @@ namespace TimeManagerWebAPI.GraphQL.Tasks
                 .Ignore();
 
             descriptor
-                .Field(t => t.ApplicationUser)
+                .Field(t => t.User)
                 .ResolveWith<Resolvers>(r => Resolvers.GetUser(default, default))
                 .UseDbContext<TimeManagerDbContext>()
                 .Description("Represents the user to whom the task belongs to.");
@@ -30,7 +30,7 @@ namespace TimeManagerWebAPI.GraphQL.Tasks
         private class Resolvers
         {
             [UseDbContext(typeof(TimeManagerDbContext))]
-            public static ApplicationUser GetUser(UserTask task, [Service] TimeManagerDbContext context)
+            public static ApplicationUser GetUser(UserTask task, [ScopedService] TimeManagerDbContext context)
             {
                 return context.Users.FirstOrDefault(u => u.Id == task.UserId);
             }

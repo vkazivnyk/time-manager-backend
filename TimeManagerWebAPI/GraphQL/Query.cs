@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.Data;
 using TimeManageData.DbContexts;
+using TimeManageData.Models;
 
 namespace TimeManagerWebAPI.GraphQL
 {
@@ -12,9 +13,10 @@ namespace TimeManagerWebAPI.GraphQL
     public class Query
     {
         [UseDbContext(typeof(TimeManagerDbContext))]
-        public IQueryable<TimeManageData.Models.Task> GetTask([ScopedService] TimeManagerDbContext context)
+        [GraphQLDescription("Represents the query for retrieving user's tasks.")]
+        public IQueryable<UserTask> GetTask([ScopedService] TimeManagerDbContext context)
         {
-            return context.Tasks.AsQueryable();
+            return context.UserTasks.AsQueryable();
         }
     }
 }
