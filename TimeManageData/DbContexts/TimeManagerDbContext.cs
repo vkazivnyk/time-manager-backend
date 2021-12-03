@@ -26,12 +26,12 @@ namespace TimeManageData.DbContexts
             modelBuilder
                 .Entity<ApplicationUser>()
                 .HasMany(u => u.Tasks)
-                .WithOne(t => t.ApplicationUser)
+                .WithOne(t => t.User)
                 .HasForeignKey(t => t.UserId);
 
             modelBuilder
                 .Entity<UserTask>()
-                .HasOne(t => t.ApplicationUser)
+                .HasOne(t => t.User)
                 .WithMany(u => u.Tasks)
                 .HasForeignKey(t => t.UserId);
 

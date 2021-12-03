@@ -7,33 +7,68 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreRateLimit;
+using GraphQL.Server.Ui.Voyager;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
+using TimeManageData.DbContexts;
+using TimeManagerWebAPI.GraphQL;
+using TimeManagerWebAPI.GraphQL.Tasks;
+using TimeManagerWebAPI.GraphQL.Users;
 
 namespace TimeManagerWebAPI
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddPooledDbContextFactory<TimeManagerDbContext>(options =>
+            {
+                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=time-manager;Trusted_Connection=True;");
+            });
+
+            services
+                .AddGraphQLServer()
+                .AddQueryType<Query>()
+                .AddType<UserTaskType>()
+                .AddType<UserTaskPayloadType>()
+                .AddType<ApplicationUserType>();
+
+            services.AddMemoryCache();
+
+            services.AddInMemoryRateLimiting();
+
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseGraphQLVoyager(new VoyagerOptions
+                {
+                    GraphQLEndPoint = "/graphql"
+                }, "/graphql-voyager");
             }
 
             app.UseRouting();
 
+            app.UseIpRateLimiting();
+
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapGraphQL();
             });
         }
     }
