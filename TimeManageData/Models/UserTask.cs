@@ -24,6 +24,6 @@ namespace TimeManageData.Models
         [Required]
         public Difficulty Difficulty { get; set; }
 
-        public ApplicationUser ApplicationUser { get; set; }
+        public ApplicationUser User { get; set; }
     }
 }
