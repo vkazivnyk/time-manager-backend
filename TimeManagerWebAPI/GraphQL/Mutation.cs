@@ -28,5 +28,22 @@ namespace TimeManagerWebAPI.GraphQL
 
             return new UserTaskPutPayload(taskToPut);
         }
+
+        [UseDbContext(typeof(TimeManagerDbContext))]
+        public async Task<UserTaskDeletePayload> DeleteUserTask(UserTaskDeleteInput input, [ScopedService] TimeManagerDbContext context)
+        {
+            UserTask taskToDelete = context.UserTasks.FirstOrDefault(t => t.Id == input.Id);
+
+            if (taskToDelete is null)
+            {
+                throw new GraphQLException("There was no task with the specified id.");
+            }
+
+            context.UserTasks.Remove(taskToDelete);
+
+            await context.SaveChangesAsync();
+
+            return new UserTaskDeletePayload(taskToDelete);
+        }
     }
 }

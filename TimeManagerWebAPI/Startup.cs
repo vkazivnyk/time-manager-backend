@@ -43,6 +43,8 @@ namespace TimeManagerWebAPI
                 .AddType<UserTaskPayloadType>()
                 .AddType<UserTaskPutInputType>()
                 .AddType<UserTaskPutPayloadType>()
+                .AddType<UserTaskDeleteInputType>()
+                .AddType<UserTaskDeletePayloadType>()
                 .AddType<ApplicationUserType>();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
