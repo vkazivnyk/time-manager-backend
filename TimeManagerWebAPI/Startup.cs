@@ -13,6 +13,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TimeManageData.DbContexts;
 using TimeManagerWebAPI.GraphQL;
+using TimeManagerWebAPI.GraphQL.ErrorFilters;
 using TimeManagerWebAPI.GraphQL.Tasks;
 using TimeManagerWebAPI.GraphQL.Users;
 
@@ -43,6 +44,8 @@ namespace TimeManagerWebAPI
                 .AddType<UserTaskPutInputType>()
                 .AddType<UserTaskPutPayloadType>()
                 .AddType<ApplicationUserType>();
+
+            services.AddErrorFilter<GraphQLErrorFilter>();
 
             services.AddMemoryCache();
 
