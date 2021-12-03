@@ -8,7 +8,7 @@ namespace TimeManageData.DbContexts
     {
         public override DbSet<ApplicationUser> Users { get; set; }
 
-        public DbSet<Task> Tasks { get; set; }
+        public DbSet<UserTask> UserTasks { get; set; }
 
         public TimeManagerDbContext(DbContextOptions options) : base(options) { }
 
@@ -30,7 +30,7 @@ namespace TimeManageData.DbContexts
                 .HasForeignKey(t => t.UserId);
 
             modelBuilder
-                .Entity<Task>()
+                .Entity<UserTask>()
                 .HasOne(t => t.ApplicationUser)
                 .WithMany(u => u.Tasks)
                 .HasForeignKey(t => t.UserId);

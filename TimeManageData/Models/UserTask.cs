@@ -4,7 +4,7 @@ using TimeManageData.Enums;
 
 namespace TimeManageData.Models
 {
-    public class Task
+    public class UserTask
     {
         [Key]
         public string Id { get; set; }

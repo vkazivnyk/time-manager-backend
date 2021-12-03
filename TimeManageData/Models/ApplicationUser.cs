@@ -5,6 +5,6 @@ namespace TimeManageData.Models
 {
     public class ApplicationUser : IdentityUser
     {
-        public List<Task> Tasks = new ();
+        public List<UserTask> Tasks = new ();
     }
 }
