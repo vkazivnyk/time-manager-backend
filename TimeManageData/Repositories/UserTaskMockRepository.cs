@@ -25,7 +25,9 @@ namespace TimeManageData.Repositories
                     Difficulty = 2,
                     User = new ApplicationUser()
                     {
-                        Id = "afdfauiewhfkj"
+                        Id = "afdfauiewhfkj",
+                        ActiveTimeStartSeconds = 5000,
+                        ActiveTimeEndSeconds = 72000,
                     },
                     UserId = "afdfauiewhfkj"
                 },
@@ -38,7 +40,9 @@ namespace TimeManageData.Repositories
                     Difficulty = 0,
                     User = new ApplicationUser()
                     {
-                        Id = "af323faedsfsd"
+                        Id = "af323faedsfsd",
+                        ActiveTimeStartSeconds = 2000,
+                        ActiveTimeEndSeconds = 72000,
                     },
                     UserId = "af323faedsfsd"
                 },
@@ -51,7 +55,9 @@ namespace TimeManageData.Repositories
                     Difficulty = 4,
                     User = new ApplicationUser()
                     {
-                        Id = "bys54btswbrsa43vt"
+                        Id = "bys54btswbrsa43vt",
+                        ActiveTimeStartSeconds = 15000,
+                        ActiveTimeEndSeconds = 72000,
                     },
                     UserId = "bys54btswbrsa43vt"
                 },

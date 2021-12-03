@@ -8,7 +8,7 @@ namespace TimeManageData.Models
     {
         public List<UserTask> Tasks { get; set; } = new ();
 
-        public DateTime ActiveTimeStart { get; set; }
-        public DateTime ActiveTimeEnd { get; set; }
+        public int ActiveTimeStartSeconds { get; set; }
+        public int ActiveTimeEndSeconds { get; set; }
     }
 }
