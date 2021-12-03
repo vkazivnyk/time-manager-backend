@@ -10,6 +10,8 @@ using System.Threading.Tasks;
 using AspNetCoreRateLimit;
 using GraphQL.Server.Ui.Voyager;
 using Microsoft.Extensions.Configuration;
+using TimeManagerWebAPI.GraphQL;
+using TimeManagerWebAPI.GraphQL.Tasks;
 
 namespace TimeManagerWebAPI
 {
@@ -25,7 +27,9 @@ namespace TimeManagerWebAPI
         public void ConfigureServices(IServiceCollection services)
         {
             services
-                .AddGraphQLServer();
+                .AddGraphQLServer()
+                .AddQueryType<Query>()
+                .AddType<TaskType>();
 
             services.AddMemoryCache();
 
