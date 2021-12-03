@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using TimeManageData.DbContexts;
 using TimeManageData.Models;
@@ -14,34 +15,16 @@ namespace TimeManageData.Repositories
             _dbContext = dbContext;
         }
 
-        public Task SaveChangesAsync()
-        {
-            return default;
-        }
+        public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
 
-        public void Create(ApplicationUser item)
-        {
+        public void Create(ApplicationUser item) => _dbContext.Add(item);
 
-        }
+        public ApplicationUser Find(string id) => _dbContext.Users.First(x => x.Id == id);
 
-        public ApplicationUser Find(string id)
-        {
-            return default;
-        }
+        public ApplicationUser Update(ApplicationUser item) => _dbContext.Update(item).Entity;
 
-        public bool Update(string id, ApplicationUser item)
-        {
-            return default;
-        }
+        public ApplicationUser Delete(string id) => _dbContext.Remove(Find(id)).Entity;
 
-        public bool Delete(string id)
-        {
-            return default;
-        }
-
-        public List<ApplicationUser> GetAll()
-        {
-            return default;
-        }
+        public List<ApplicationUser> GetAll() => _dbContext.Users.ToList();
     }
 }

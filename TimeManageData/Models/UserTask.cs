@@ -1,6 +1,5 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
-using TimeManageData.Enums;
 
 namespace TimeManageData.Models
 {
@@ -19,10 +18,10 @@ namespace TimeManageData.Models
         public DateTime Deadline { get; set; }
 
         [Required]
-        public long TotalSeconds { get; set; }
+        public int TotalSeconds { get; set; }
 
         [Required]
-        public Difficulty Difficulty { get; set; }
+        public int Difficulty { get; set; }
 
         public ApplicationUser User { get; set; }
     }
