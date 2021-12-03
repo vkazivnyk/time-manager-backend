@@ -37,8 +37,11 @@ namespace TimeManagerWebAPI
             services
                 .AddGraphQLServer()
                 .AddQueryType<Query>()
+                .AddMutationType<Mutation>()
                 .AddType<UserTaskType>()
                 .AddType<UserTaskPayloadType>()
+                .AddType<UserTaskPutInputType>()
+                .AddType<UserTaskPutPayloadType>()
                 .AddType<ApplicationUserType>();
 
             services.AddMemoryCache();
