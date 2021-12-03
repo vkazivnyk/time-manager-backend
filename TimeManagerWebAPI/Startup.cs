@@ -7,18 +7,31 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCoreRateLimit;
+using Microsoft.Extensions.Configuration;
 
 namespace TimeManagerWebAPI
 {
     public class Startup
     {
-        // This method gets called by the runtime. Use this method to add services to the container.
-        // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
-        public void ConfigureServices(IServiceCollection services)
+        public IConfiguration Configuration { get; }
+
+        public Startup(IConfiguration configuration)
         {
+            Configuration = configuration;
         }
 
-        // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
+        public void ConfigureServices(IServiceCollection services)
+        {
+            services.AddMemoryCache();
+
+            services.AddInMemoryRateLimiting();
+
+            services.AddSingleton<IRateLimitConfiguration, RateLimitConfiguration>();
+
+            services.Configure<IpRateLimitOptions>(Configuration.GetSection("IpRateLimiting"));
+        }
+
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
             if (env.IsDevelopment())
@@ -27,6 +40,8 @@ namespace TimeManagerWebAPI
             }
 
             app.UseRouting();
+
+            app.UseIpRateLimiting();
 
             app.UseEndpoints(endpoints =>
             {
