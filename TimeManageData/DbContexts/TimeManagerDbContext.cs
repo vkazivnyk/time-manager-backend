@@ -4,9 +4,22 @@ using TimeManageData.Models;
 
 namespace TimeManageData.DbContexts
 {
-    public class UsersDbContext : IdentityDbContext<ApplicationUser>
+    public class TimeManagerDbContext : IdentityDbContext<ApplicationUser>
     {
         public override DbSet<ApplicationUser> Users { get; set; }
+
+        public DbSet<Task> Tasks { get; set; }
+
+        public TimeManagerDbContext(DbContextOptions options) : base(options) { }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlServer(
+                    @"Server=(localdb)\mssqllocaldb;Database=time-manager;Trusted_Connection=True;");
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
