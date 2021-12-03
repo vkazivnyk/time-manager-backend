@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using HotChocolate;
 using HotChocolate.Data;
 using TimeManageData.DbContexts;
-using TimeManageData.Enums;
 using TimeManageData.Models;
 using TimeManagerWebAPI.GraphQL.Tasks;
 
@@ -22,7 +21,7 @@ namespace TimeManagerWebAPI.GraphQL
             taskToPut.Name = input.Name;
             taskToPut.Deadline = input.Deadline;
             taskToPut.TotalSeconds = input.TotalSeconds;
-            taskToPut.Difficulty = (Difficulty)input.Difficulty;
+            taskToPut.Difficulty = input.Difficulty;
 
             await context.SaveChangesAsync().ConfigureAwait(false);
 
