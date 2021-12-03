@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using AspNetCoreRateLimit;
+using GraphQL.Server.Ui.Voyager;
 using Microsoft.Extensions.Configuration;
 
 namespace TimeManagerWebAPI
@@ -23,6 +24,9 @@ namespace TimeManagerWebAPI
 
         public void ConfigureServices(IServiceCollection services)
         {
+            services
+                .AddGraphQLServer();
+
             services.AddMemoryCache();
 
             services.AddInMemoryRateLimiting();
@@ -37,6 +41,11 @@ namespace TimeManagerWebAPI
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+
+                app.UseGraphQLVoyager(new VoyagerOptions
+                {
+                    GraphQLEndPoint = "/graphql"
+                }, "/graphql-voyager");
             }
 
             app.UseRouting();
@@ -45,10 +54,7 @@ namespace TimeManagerWebAPI
 
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapGet("/", async context =>
-                {
-                    await context.Response.WriteAsync("Hello World!");
-                });
+                endpoints.MapGraphQL();
             });
         }
     }
