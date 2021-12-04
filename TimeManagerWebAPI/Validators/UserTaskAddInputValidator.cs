@@ -19,10 +19,6 @@ namespace TimeManagerWebAPI.Validators
             RuleFor(input => input.Deadline)
                 .NotEmpty()
                 .WithMessage(ErrorMessages.UserTaskDeadlineEmpty);
-
-            RuleFor(input => input.TimeEstimation)
-                .NotEmpty()
-                .WithMessage(ErrorMessages.UserTaskTimeEstimationEmpty);
         }
     }
 }
