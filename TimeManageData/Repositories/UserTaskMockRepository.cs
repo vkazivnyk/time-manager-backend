@@ -119,7 +119,7 @@ namespace TimeManageData.Repositories
 
         public List<UserTask> GetAll()
         {
-            throw new NotImplementedException();
+            return _tasks;
         }
     }
 }

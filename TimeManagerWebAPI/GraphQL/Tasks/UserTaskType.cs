@@ -7,6 +7,7 @@ using HotChocolate.Data;
 using HotChocolate.Types;
 using TimeManageData.DbContexts;
 using TimeManageData.Models;
+using TimeManageData.Repositories;
 
 namespace TimeManagerWebAPI.GraphQL.Tasks
 {
@@ -29,10 +30,9 @@ namespace TimeManagerWebAPI.GraphQL.Tasks
 
         private class Resolvers
         {
-            [UseDbContext(typeof(TimeManagerDbContext))]
-            public static ApplicationUser GetUser(UserTask task, [ScopedService] TimeManagerDbContext context)
+            public static ApplicationUser GetUser(UserTask task, [Service] UserMockRepository userRepo)
             {
-                return context.Users.FirstOrDefault(u => u.Id == task.UserId);
+                return userRepo.GetAll().FirstOrDefault(u => u.Id == task.UserId);
             }
         }
     }
