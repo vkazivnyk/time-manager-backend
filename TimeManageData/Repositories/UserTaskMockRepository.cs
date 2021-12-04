@@ -20,7 +20,7 @@ namespace TimeManageData.Repositories
                 {
                     Id = "afh894afjknn39",
                     Deadline = DateTime.Now.AddDays(2),
-                    TimeEstimation = 1,
+                    Importance = 1,
                     Name = "FirstTask",
                     Difficulty = 2,
                     User = new ApplicationUser()
@@ -35,7 +35,7 @@ namespace TimeManageData.Repositories
                 {
                     Id = "gdfsgs45gdfgs4",
                     Deadline = DateTime.Now.AddDays(7),
-                    TimeEstimation = 0,
+                    Importance = 0,
                     Name = "SecondTask",
                     Difficulty = 0,
                     User = new ApplicationUser()
@@ -50,7 +50,7 @@ namespace TimeManageData.Repositories
                 {
                     Id = "afh894afjk5nn39",
                     Deadline = DateTime.Now.AddDays(20),
-                    TimeEstimation = 0,
+                    Importance = 0,
                     Name = "ThirdTask",
                     Difficulty = 1,
                     User = new ApplicationUser()
@@ -98,7 +98,7 @@ namespace TimeManageData.Repositories
             taskToPut.Deadline = item.Deadline;
             taskToPut.Difficulty = item.Difficulty;
             taskToPut.Name = item.Name;
-            taskToPut.TimeEstimation = item.TimeEstimation;
+            taskToPut.Importance = item.Importance;
 
             return taskToPut;
         }
