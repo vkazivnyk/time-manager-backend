@@ -111,6 +111,11 @@ namespace TimeManageData.Repositories
             return taskToDelete;
         }
 
+        public List<UserTask> Where(Func<UserTask, bool> predicate)
+        {
+            return _tasks.Where(predicate).ToList();
+        }
+
         public List<UserTask> GetAll()
         {
             return _tasks;

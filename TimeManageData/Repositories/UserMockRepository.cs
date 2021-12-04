@@ -127,6 +127,11 @@ namespace TimeManageData.Repositories
             return userToDelete;
         }
 
+        public List<ApplicationUser> Where(Func<ApplicationUser, bool> predicate)
+        {
+            return _users.Where(predicate).ToList();
+        }
+
         public List<ApplicationUser> GetAll()
         {
             return _users;

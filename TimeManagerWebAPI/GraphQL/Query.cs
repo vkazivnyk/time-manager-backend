@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
+using Microsoft.AspNetCore.Http;
 using TimeManageData.DbContexts;
 using TimeManageData.Models;
 using TimeManageData.Repositories;
@@ -18,9 +20,14 @@ namespace TimeManagerWebAPI.GraphQL
         [UseFiltering]
         [UseSorting]
         [GraphQLDescription("Represents the query for retrieving user's tasks.")]
-        public IQueryable<UserTask> GetTask([Service] IRepository<UserTask> taskRepo)
+        [Authorize(Policy = "Auth")]
+        public IQueryable<UserTask> GetTask(
+            [Service] IRepository<UserTask> taskRepo,
+            [Service] IHttpContextAccessor contextAccessor)
         {
-            IEnumerable<UserTask> allTasks = taskRepo.GetAll();
+            string userId = contextAccessor.HttpContext!.User.Claims.First().Value;
+
+            List<UserTask> allTasks = taskRepo.Where(t => t.UserId == userId);
 
             foreach (UserTask task in allTasks)
             {
