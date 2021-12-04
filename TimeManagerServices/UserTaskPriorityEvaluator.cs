@@ -1,29 +1,27 @@
 using System;
 using System.Collections.Generic;
+using TimeManageData.Models;
 using TimeManageData.Repositories;
 
 
 namespace TimeManagerServices
 {
-    public class UserTaskPriorityEvaluator
+    public static class UserTaskPriorityEvaluator
     {
-        private UserTaskMockRepository _userTaskRepository;
-        
-        public UserTaskPriorityEvaluator(UserTaskMockRepository userTask)
+        public static double EstimatePriority(UserTask userTask)
         {
-            _userTaskRepository = userTask;
-        }
-        
-        public double EstimatePriority()
-        {
-            //return (double)1/(complexity*CalculateMin(deadLine-DateTime.Now)*leadTime);
-            return 0;
+            return 1/(userTask.Difficulty*Math.Pow(CalculateMin(userTask.Deadline-DateTime.Now),2)*userTask.TotalSeconds/60);
         }
 
-        public int CalculateMin(TimeSpan date)
+        private static int CalculateMin(TimeSpan date)
         {
             return date.Days * 24 * 60 + date.Hours * 60 +
                    date.Minutes;
+        }
+
+        private static void MembershipFunction()
+        {
+            
         }
     }
 }
