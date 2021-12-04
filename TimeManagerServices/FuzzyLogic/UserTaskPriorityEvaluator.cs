@@ -5,7 +5,7 @@ using TimeManageData.Models;
 using TimeManageData.Repositories;
 
 
-namespace TimeManagerServices
+namespace TimeManagerServices.FuzzyLogic
 {
     public static class UserTaskPriorityEvaluator
     {
@@ -120,14 +120,12 @@ namespace TimeManagerServices
             rule.AddAntecedent(new Clause(importance, "Is", "Low"));
             rule.Consequent = new Clause(priority, "Is", "Medium");
             rie.AddRule(rule);
-            
-            
 
             terminate.X = CalculateDay(userTask.Deadline-DateTime.Now);
 
             difficulty.X = userTask.Difficulty + 1;
-            
-            
+
+            importance.X = userTask.Importance+1;
 
             rie.Infer(priority);
             

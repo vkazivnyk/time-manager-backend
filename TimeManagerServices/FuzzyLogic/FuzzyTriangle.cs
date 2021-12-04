@@ -1,4 +1,4 @@
-namespace TimeManagerServices
+namespace TimeManagerServices.FuzzyLogic
 {
     public class FuzzyTriangle : Membership
     {

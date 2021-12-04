@@ -1,6 +1,6 @@
 using System.Collections.Generic;
 
-namespace TimeManagerServices
+namespace TimeManagerServices.FuzzyLogic
 {
     public class Rule
     {

@@ -1,6 +1,6 @@
 using System;
 
-namespace TimeManagerServices
+namespace TimeManagerServices.FuzzyLogic
 {
     public class Clause
     {

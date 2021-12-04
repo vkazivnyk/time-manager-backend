@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using System.Data;
 
-namespace TimeManagerServices
+namespace TimeManagerServices.FuzzyLogic
 {
     public class FuzzySet
     {

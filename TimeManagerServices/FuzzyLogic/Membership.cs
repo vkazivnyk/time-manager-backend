@@ -1,4 +1,4 @@
-namespace TimeManagerServices
+namespace TimeManagerServices.FuzzyLogic
 {
     public interface Membership
     {
