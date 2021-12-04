@@ -17,7 +17,7 @@ namespace TimeManageData.Repositories
 
         public async Task SaveChangesAsync() => await _dbContext.SaveChangesAsync();
 
-        public void Create(ApplicationUser item) => _dbContext.Add(item);
+        public ApplicationUser Create(ApplicationUser item) => _dbContext.Add(item).Entity;
 
         public ApplicationUser Find(string id) => _dbContext.Users.First(x => x.Id == id);
 
