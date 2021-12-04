@@ -15,7 +15,7 @@ namespace TimeManagerWebAPI
 
         public const string UserTaskDifficultyEmpty = "User task difficulty can not be empty.";
 
-        public const string UserTaskTotalSecondsEmpty = "User task time span can not be empty.";
+        public const string UserTaskTimeEstimationEmpty = "User task time estimation can not be empty.";
 
         public const string CantUpdateUserTask = "There was a problem updating a user task.";
 
