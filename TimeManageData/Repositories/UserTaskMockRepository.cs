@@ -8,7 +8,7 @@ using TimeManageData.Models;
 
 namespace TimeManageData.Repositories
 {
-    class UserTaskMockRepository : IRepository<UserTask>
+    public class UserTaskMockRepository : IRepository<UserTask>
     {
         private readonly List<UserTask> _tasks;
 

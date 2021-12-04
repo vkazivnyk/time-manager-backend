@@ -7,6 +7,13 @@ namespace TimeManagerServices
 {
     public class UserTaskPriorityEvaluator
     {
+        private UserTaskMockRepository _userTaskRepository;
+        
+        public UserTaskPriorityEvaluator(UserTaskMockRepository userTask)
+        {
+            _userTaskRepository = userTask;
+        }
+        
         public double EstimatePriority()
         {
             //return (double)1/(complexity*CalculateMin(deadLine-DateTime.Now)*leadTime);
