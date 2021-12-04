@@ -18,7 +18,7 @@ namespace TimeManageData.Models
         public DateTime Deadline { get; set; }
 
         [Required]
-        public int TotalSeconds { get; set; }
+        public int TimeEstimation { get; set; }
 
         [Required]
         public int Difficulty { get; set; }

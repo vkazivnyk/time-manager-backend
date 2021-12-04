@@ -32,7 +32,7 @@ namespace TimeManagerWebAPI.GraphQL
 
             taskToPut.Name = input.Name;
             taskToPut.Deadline = input.Deadline;
-            taskToPut.TotalSeconds = input.TotalSeconds;
+            taskToPut.TimeEstimation = input.TimeEstimation;
             taskToPut.Difficulty = input.Difficulty;
 
             await taskRepo.SaveChangesAsync().ConfigureAwait(false);
@@ -75,7 +75,7 @@ namespace TimeManagerWebAPI.GraphQL
                 User = userRepo.Find("afdfauiewhfkj"),
                 Deadline = input.Deadline,
                 Name = input.Name,
-                TotalSeconds = input.TotalSeconds,
+                TimeEstimation = input.TimeEstimation,
                 Difficulty = input.Difficulty,
                 UserId = "afdfauiewhfkj"
             };

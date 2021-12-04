@@ -5,5 +5,5 @@ using System.Threading.Tasks;
 
 namespace TimeManagerWebAPI.GraphQL.Tasks
 {
-    public record UserTaskAddInput(string Name, DateTime Deadline, int TotalSeconds, int Difficulty);
+    public record UserTaskAddInput(string Name, DateTime Deadline, int TimeEstimation, int Difficulty);
 }

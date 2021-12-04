@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TimeManageData.DbContexts;
 
 namespace TimeManageData.Migrations
 {
     [DbContext(typeof(TimeManagerDbContext))]
-    partial class TimeManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20211204092548_TimeEstimation")]
+    partial class TimeEstimation
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
