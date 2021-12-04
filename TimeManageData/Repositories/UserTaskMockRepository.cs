@@ -26,8 +26,6 @@ namespace TimeManageData.Repositories
                     User = new ApplicationUser()
                     {
                         Id = "afdfauiewhfkj",
-                        ActiveTimeStartSeconds = 5000,
-                        ActiveTimeEndSeconds = 72000,
                     },
                     UserId = "afdfauiewhfkj"
                 },
@@ -41,8 +39,6 @@ namespace TimeManageData.Repositories
                     User = new ApplicationUser()
                     {
                         Id = "af323faedsfsd",
-                        ActiveTimeStartSeconds = 2000,
-                        ActiveTimeEndSeconds = 72000,
                     },
                     UserId = "af323faedsfsd"
                 },
@@ -56,8 +52,6 @@ namespace TimeManageData.Repositories
                     User = new ApplicationUser()
                     {
                         Id = "bys54btswbrsa43vt",
-                        ActiveTimeStartSeconds = 15000,
-                        ActiveTimeEndSeconds = 72000,
                     },
                     UserId = "bys54btswbrsa43vt"
                 },

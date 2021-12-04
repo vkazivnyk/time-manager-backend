@@ -19,8 +19,6 @@ namespace TimeManageData.Repositories
                 new()
                 {
                     Id = "afdfauiewhfkj",
-                    ActiveTimeStartSeconds = 5000,
-                    ActiveTimeEndSeconds = 72000,
                     Tasks = new List<UserTask>()
                     {
                         new()
@@ -33,8 +31,6 @@ namespace TimeManageData.Repositories
                             User = new ApplicationUser()
                             {
                                 Id = "afdfauiewhfkj",
-                                ActiveTimeStartSeconds = 5000,
-                                ActiveTimeEndSeconds = 72000,
                             },
                             UserId = "afdfauiewhfkj"
                         }
@@ -43,8 +39,6 @@ namespace TimeManageData.Repositories
                 new()
                 {
                     Id = "af323faedsfsd",
-                    ActiveTimeStartSeconds = 2000,
-                    ActiveTimeEndSeconds = 72000,
                     Tasks = new List<UserTask>()
                     {
                         new()
@@ -57,8 +51,6 @@ namespace TimeManageData.Repositories
                             User = new ApplicationUser()
                             {
                                 Id = "af323faedsfsd",
-                                ActiveTimeStartSeconds = 2000,
-                                ActiveTimeEndSeconds = 72000,
                             },
                             UserId = "af323faedsfsd"
                         }
@@ -67,8 +59,6 @@ namespace TimeManageData.Repositories
                 new()
                 {
                     Id = "bys54btswbrsa43vt",
-                    ActiveTimeStartSeconds = 15000,
-                    ActiveTimeEndSeconds = 72000,
                     Tasks = new List<UserTask>()
                     {
                         new()
@@ -81,8 +71,6 @@ namespace TimeManageData.Repositories
                             User = new ApplicationUser()
                             {
                                 Id = "bys54btswbrsa43vt",
-                                ActiveTimeStartSeconds = 15000,
-                                ActiveTimeEndSeconds = 72000,
                             },
                             UserId = "bys54btswbrsa43vt"
                         }
@@ -121,9 +109,6 @@ namespace TimeManageData.Repositories
             {
                 throw new ArgumentException(nameof(item));
             }
-
-            userToPut.ActiveTimeEndSeconds = item.ActiveTimeEndSeconds;
-            userToPut.ActiveTimeStartSeconds = item.ActiveTimeStartSeconds;
 
             return userToPut;
         }
