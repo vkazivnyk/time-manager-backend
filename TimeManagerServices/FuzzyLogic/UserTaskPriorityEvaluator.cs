@@ -12,18 +12,19 @@ namespace TimeManagerServices.FuzzyLogic
 
         public static double TimeEvaluator(UserTask userTask)
         {
+            Random rand = new Random();
             RuleInferenceEngine rie = new RuleInferenceEngine();
 
             FuzzySet time = new FuzzySet("Time", 1, 9, 0.1);
-            time.AddMembership("Low", new FuzzyTriangle(1, 1, 4));
+            time.AddMembership("Low", new FuzzyReverseGrade(1, 4));
             time.AddMembership("Medium", new FuzzyTriangle(3, 5, 7));
-            time.AddMembership("High", new FuzzyTriangle(6, 9, 9));
+            time.AddMembership("High", new FuzzyGrade(6, 9));
             rie.AddFuzzySet(time.Name, time);
             
-            FuzzySet difficulty = new FuzzySet("Difficulty", 1, 11, 0.1);
-            difficulty.AddMembership("Low", new FuzzyTriangle(1, 1, 5));
+            FuzzySet difficulty = new FuzzySet("Difficulty", 2, 10, 0.1);
+            difficulty.AddMembership("Low", new FuzzyReverseGrade(2, 5));
             difficulty.AddMembership("Medium", new FuzzyTriangle(4, 6, 8));
-            difficulty.AddMembership("High", new FuzzyTriangle(7,11, 11));
+            difficulty.AddMembership("High", new FuzzyGrade(7,10));
             rie.AddFuzzySet(difficulty.Name, difficulty);
             
             Rule rule = new Rule("Rule 1");
@@ -41,7 +42,7 @@ namespace TimeManagerServices.FuzzyLogic
             rule.Consequent = new Clause(time, "Is", "Low");
             rie.AddRule(rule);
 
-            difficulty.X = (userTask.Difficulty + 1) * 2;
+            difficulty.X = (userTask.Difficulty + 1) * 2 + rand.NextDouble()*2 - 1;
             
             rie.Infer(time);
 
@@ -52,80 +53,228 @@ namespace TimeManagerServices.FuzzyLogic
         {
             RuleInferenceEngine rie = new RuleInferenceEngine();
 
-            FuzzySet priority = new FuzzySet("Priority", 1, 9, 0.1);
-            priority.AddMembership("Low", new FuzzyTriangle(1, 1, 4));
-            priority.AddMembership("Medium", new FuzzyTriangle(3, 5, 7));
-            priority.AddMembership("High", new FuzzyTriangle(6, 9, 9));
+            FuzzySet priority = new FuzzySet("Priority", 1, 12, 0.1);
+            priority.AddMembership("VeryLow", new FuzzyReverseGrade(1, 3));
+            priority.AddMembership("Low", new FuzzyTriangle(2.5, 3.5, 4.5));
+            priority.AddMembership("LowMedium", new FuzzyTriangle(4, 5, 6));
+            priority.AddMembership("Medium", new FuzzyTriangle(5.5, 6.5, 7.5));
+            priority.AddMembership("MediumHigh", new FuzzyTriangle(7, 8, 9));
+            priority.AddMembership("High", new FuzzyTriangle(8.5, 9.5, 10.5));
+            priority.AddMembership("VeryHigh", new FuzzyGrade(10,12));
             rie.AddFuzzySet(priority.Name, priority);
 
-            FuzzySet terminate = new FuzzySet("Terminate", 1, 30, 0.1);
-            terminate.AddMembership("High", new FuzzyTriangle(0, 0, 12));
-            terminate.AddMembership("Medium", new FuzzyTriangle(10, 15, 20));
-            terminate.AddMembership("Low", new FuzzyTriangle(22, 30, 30));
+            FuzzySet terminate = new FuzzySet("Terminate", 0, 60*24*30, 100);
+            terminate.AddMembership("High", new FuzzyReverseGrade(0, 60*24*12));
+            terminate.AddMembership("Medium", new FuzzyTriangle(60*24*10, 60*24*15, 60*24*20));
+            terminate.AddMembership("Low", new FuzzyGrade(60*24*18, 60*24*30));
             rie.AddFuzzySet(terminate.Name, terminate);
             
             FuzzySet difficulty = new FuzzySet("Difficulty", 2, 10, 0.1);
-            difficulty.AddMembership("Low", new FuzzyTriangle(2, 2, 5));
+            difficulty.AddMembership("Low", new FuzzyReverseGrade(2, 5));
             difficulty.AddMembership("Medium", new FuzzyTriangle(4, 6, 8));
-            difficulty.AddMembership("High", new FuzzyTriangle(7,10, 10));
+            difficulty.AddMembership("High", new FuzzyGrade(7, 10));
             rie.AddFuzzySet(difficulty.Name, difficulty);
             
             FuzzySet importance = new FuzzySet("Importance", 2, 10, 0.1);
-            importance.AddMembership("Low", new FuzzyTriangle(2, 2, 5));
+            importance.AddMembership("Low", new FuzzyReverseGrade(2, 5));
             importance.AddMembership("Medium", new FuzzyTriangle(4, 6, 8));
-            importance.AddMembership("High", new FuzzyTriangle(7,10, 10));
+            importance.AddMembership("High", new FuzzyGrade(7,10));
             rie.AddFuzzySet(importance.Name, importance);
 
             Rule rule = new Rule("Rule 1");
             rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
-            rule.Consequent = new Clause(priority, "Is", "High");
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "VeryLow");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 2");
             rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
-            rule.Consequent = new Clause(priority, "Is", "High");
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "Medium");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 3");
             rule.AddAntecedent(new Clause(terminate, "Is", "High"));
-            rule.Consequent = new Clause(priority, "Is", "Medium");
-            rie.AddRule(rule);
-
-            rule = new Rule("Rule 4");
-            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
             rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 4");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "LowMedium");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 5");
-            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
-            rule.Consequent = new Clause(priority, "Is", "Medium");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 6");
-            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
-            rule.Consequent = new Clause(priority, "Is", "Low");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
             rie.AddRule(rule);
-
+            
             rule = new Rule("Rule 7");
-            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
-            rule.Consequent = new Clause(priority, "Is", "High");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 8");
-            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Low"));
             rule.Consequent = new Clause(priority, "Is", "High");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 9");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
             rule.AddAntecedent(new Clause(importance, "Is", "Low"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 10");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
             rule.Consequent = new Clause(priority, "Is", "Medium");
             rie.AddRule(rule);
+            
+            rule = new Rule("Rule 11");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 12");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 13");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 14");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 15");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 16");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 17");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 18");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "Medium"));
+            rule.Consequent = new Clause(priority, "Is", "VeryHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 19");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 20");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 21");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "VeryHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 22");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 23");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 24");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "High");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 25");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "VeryHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 26");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "VeryHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 27");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.AddAntecedent(new Clause(importance, "Is", "High"));
+            rule.Consequent = new Clause(priority, "Is", "VeryHigh");
+            rie.AddRule(rule);
 
-            terminate.X = CalculateDay(userTask.Deadline-DateTime.Now);
+            terminate.X = CalculateMinutes(userTask.Deadline-DateTime.Now);
 
-            difficulty.X = userTask.Difficulty + 1;
+            difficulty.X = (userTask.Difficulty + 1)*2;
 
-            importance.X = userTask.Importance+1;
+            importance.X = (userTask.Importance+1)*2;
 
             rie.Infer(priority);
             
@@ -137,9 +286,9 @@ namespace TimeManagerServices.FuzzyLogic
             return 1/((userTask.Difficulty+1)*Math.Pow(CalculateMin(userTask.Deadline-DateTime.Now),2)*userTask.TotalSeconds/60);
         }*/
 
-        private static int CalculateDay(TimeSpan date)
+        private static int CalculateMinutes(TimeSpan date)
         {
-            return date.Days;
+            return (int)date.TotalMinutes;
         }
     }
 }
