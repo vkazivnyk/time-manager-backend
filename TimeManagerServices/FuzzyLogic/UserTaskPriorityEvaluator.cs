@@ -20,10 +20,10 @@ namespace TimeManagerServices.FuzzyLogic
             time.AddMembership("High", new FuzzyTriangle(6, 9, 9));
             rie.AddFuzzySet(time.Name, time);
             
-            FuzzySet difficulty = new FuzzySet("Difficulty", 2, 10, 0.1);
-            difficulty.AddMembership("Low", new FuzzyTriangle(2, 2, 5));
+            FuzzySet difficulty = new FuzzySet("Difficulty", 1, 11, 0.1);
+            difficulty.AddMembership("Low", new FuzzyTriangle(1, 1, 5));
             difficulty.AddMembership("Medium", new FuzzyTriangle(4, 6, 8));
-            difficulty.AddMembership("High", new FuzzyTriangle(7,10, 10));
+            difficulty.AddMembership("High", new FuzzyTriangle(7,11, 11));
             rie.AddFuzzySet(difficulty.Name, difficulty);
             
             Rule rule = new Rule("Rule 1");
@@ -41,7 +41,7 @@ namespace TimeManagerServices.FuzzyLogic
             rule.Consequent = new Clause(time, "Is", "Low");
             rie.AddRule(rule);
 
-            difficulty.X = userTask.Difficulty + 1;
+            difficulty.X = (userTask.Difficulty + 1) * 2;
             
             rie.Infer(time);
 
