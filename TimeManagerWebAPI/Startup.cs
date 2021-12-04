@@ -12,6 +12,7 @@ using GraphQL.Server.Ui.Voyager;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TimeManageData.DbContexts;
+using TimeManageData.Repositories;
 using TimeManagerWebAPI.GraphQL;
 using TimeManagerWebAPI.GraphQL.ErrorFilters;
 using TimeManagerWebAPI.GraphQL.Tasks;
@@ -34,6 +35,12 @@ namespace TimeManagerWebAPI
             {
                 options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=time-manager;Trusted_Connection=True;");
             });
+
+            services.AddScoped(p => p.GetRequiredService<IDbContextFactory<TimeManagerDbContext>>().CreateDbContext());
+
+            services.AddScoped<UserTaskMockRepository>();
+
+            services.AddScoped<UserMockRepository>();
 
             services
                 .AddGraphQLServer()
