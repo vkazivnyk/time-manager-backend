@@ -8,7 +8,7 @@ using TimeManageData.Models;
 
 namespace TimeManageData.Repositories
 {
-    class UserTaskMockRepository : IRepository<UserTask>
+    public class UserTaskMockRepository : IRepository<UserTask>
     {
         private readonly List<UserTask> _tasks;
 
@@ -119,7 +119,7 @@ namespace TimeManageData.Repositories
 
         public List<UserTask> GetAll()
         {
-            throw new NotImplementedException();
+            return _tasks;
         }
     }
 }
