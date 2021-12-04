@@ -14,7 +14,9 @@ namespace TimeManagerWebAPI.GraphQL
     [GraphQLDescription("Represents task mutations.")]
     public class Mutation
     {
-        public async Task<UserTaskPutPayload> PutUserTask(UserTaskPutInput input, [Service] UserTaskMockRepository taskRepo)
+        public async Task<UserTaskPutPayload> PutUserTask(
+            UserTaskPutInput input,
+            [Service] UserTaskMockRepository taskRepo)
         {
             UserTask taskToPut = taskRepo.GetAll().FirstOrDefault(t => t.Id == input.Id);
 
@@ -28,21 +30,45 @@ namespace TimeManagerWebAPI.GraphQL
             return new UserTaskPutPayload(taskToPut);
         }
 
-        [UseDbContext(typeof(TimeManagerDbContext))]
-        public async Task<UserTaskDeletePayload> DeleteUserTask(UserTaskDeleteInput input, [ScopedService] TimeManagerDbContext context)
+        public async Task<UserTaskDeletePayload> DeleteUserTask(
+            UserTaskDeleteInput input,
+            [Service] UserTaskMockRepository userRepo)
         {
-            UserTask taskToDelete = context.UserTasks.FirstOrDefault(t => t.Id == input.Id);
+            UserTask taskToDelete = userRepo.GetAll().FirstOrDefault(t => t.Id == input.Id);
 
             if (taskToDelete is null)
             {
                 throw new GraphQLException("There was no task with the specified id.");
             }
 
-            context.UserTasks.Remove(taskToDelete);
+            userRepo.Delete(taskToDelete.Id);
 
-            await context.SaveChangesAsync();
+            await userRepo.SaveChangesAsync();
 
             return new UserTaskDeletePayload(taskToDelete);
+        }
+
+        public async Task<UserTaskAddPayload> AddUserTask(
+            UserTaskAddInput input,
+            [Service] UserTaskMockRepository taskRepo,
+            [Service] UserMockRepository userRepo)
+        {
+            UserTask newTask = new()
+            {
+                Id = Guid.NewGuid().ToString(),
+                User = userRepo.Find("afdfauiewhfkj"),
+                Deadline = input.Deadline,
+                Name = input.Name,
+                TotalSeconds = input.TotalSeconds,
+                Difficulty = input.Difficulty,
+                UserId = "afdfauiewhfkj"
+            };
+
+            taskRepo.Create(newTask);
+
+            await taskRepo.SaveChangesAsync();
+
+            return new UserTaskAddPayload(newTask);
         }
     }
 }

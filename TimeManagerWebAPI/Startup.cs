@@ -38,9 +38,9 @@ namespace TimeManagerWebAPI
 
             services.AddScoped(p => p.GetRequiredService<IDbContextFactory<TimeManagerDbContext>>().CreateDbContext());
 
-            services.AddScoped<UserTaskMockRepository>();
+            services.AddSingleton<UserTaskMockRepository>();
 
-            services.AddScoped<UserMockRepository>();
+            services.AddSingleton<UserMockRepository>();
 
             services
                 .AddGraphQLServer()
@@ -48,6 +48,8 @@ namespace TimeManagerWebAPI
                 .AddMutationType<Mutation>()
                 .AddType<UserTaskType>()
                 .AddType<UserTaskPayloadType>()
+                .AddType<UserTaskAddInputType>()
+                .AddType<UserTaskAddPayloadType>()
                 .AddType<UserTaskPutInputType>()
                 .AddType<UserTaskPutPayloadType>()
                 .AddType<UserTaskDeleteInputType>()
