@@ -2,17 +2,24 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
+    <UserSecretsId>fdffd781-ef4d-43b8-b101-8afe8089c575</UserSecretsId>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="AspNetCoreRateLimit" Version="4.0.1" />
+    <PackageReference Include="FluentValidation" Version="10.3.5" />
+    <PackageReference Include="FluentValidation.AspNetCore" Version="10.3.5" />
     <PackageReference Include="GraphQL.Server.Ui.Voyager" Version="5.0.2" />
     <PackageReference Include="HotChocolate.AspNetCore" Version="11.0.8" />
+    <PackageReference Include="HotChocolate.AspNetCore.Authorization" Version="11.0.8" />
     <PackageReference Include="HotChocolate.Data.EntityFramework" Version="11.0.8" />
+    <PackageReference Include="HotChocolate.Types.Filters" Version="11.0.8" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="5.0.12" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\TimeManageData\TimeManageData.csproj" />
+    <ProjectReference Include="..\TimeManagerServices\TimeManagerServices.csproj" />
   </ItemGroup>
 
 </Project>

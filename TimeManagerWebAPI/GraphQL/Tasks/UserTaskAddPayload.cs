@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using TimeManageData.Models;
 
 namespace TimeManagerWebAPI.GraphQL.Tasks
 {
-    public record UserTaskPutInput(string Id, string Name, DateTime Deadline, int Importance, int Difficulty);
+    public record UserTaskAddPayload(UserTask Task);
 }
