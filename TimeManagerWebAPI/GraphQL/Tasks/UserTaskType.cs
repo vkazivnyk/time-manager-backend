@@ -30,7 +30,7 @@ namespace TimeManagerWebAPI.GraphQL.Tasks
 
         private class Resolvers
         {
-            public static ApplicationUser GetUser(UserTask task, [Service] UserMockRepository userRepo)
+            public static ApplicationUser GetUser(UserTask task, [Service] IRepository<ApplicationUser> userRepo)
             {
                 return userRepo.GetAll().FirstOrDefault(u => u.Id == task.UserId);
             }
