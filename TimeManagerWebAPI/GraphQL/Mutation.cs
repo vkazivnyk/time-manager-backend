@@ -7,7 +7,9 @@ using HotChocolate.Data;
 using TimeManageData.DbContexts;
 using TimeManageData.Models;
 using TimeManageData.Repositories;
+using TimeManagerWebAPI.Extensions;
 using TimeManagerWebAPI.GraphQL.Tasks;
+using TimeManagerWebAPI.Validators;
 
 namespace TimeManagerWebAPI.GraphQL
 {
@@ -18,7 +20,15 @@ namespace TimeManagerWebAPI.GraphQL
             UserTaskPutInput input,
             [Service] UserTaskMockRepository taskRepo)
         {
-            UserTask taskToPut = taskRepo.GetAll().FirstOrDefault(t => t.Id == input.Id);
+            UserTask taskToPut = taskRepo.GetAll().FirstOrDefault(t => t.Id == input?.Id);
+
+            if (taskToPut is null)
+            {
+                throw new GraphQLException(ErrorMessages.CantUpdateUserTask);
+            }
+
+            UserTaskPutInputValidator validator = new();
+            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
 
             taskToPut.Name = input.Name;
             taskToPut.Deadline = input.Deadline;
@@ -38,14 +48,17 @@ namespace TimeManagerWebAPI.GraphQL
 
             if (taskToDelete is null)
             {
-                throw new GraphQLException("There was no task with the specified id.");
+                throw new GraphQLException(ErrorMessages.CantDeleteUserTask);
             }
 
-            userRepo.Delete(taskToDelete.Id);
+            UserTaskDeleteInputValidator validator = new();
+            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
+
+            UserTask deletedTask = userRepo.Delete(taskToDelete.Id);
 
             await userRepo.SaveChangesAsync();
 
-            return new UserTaskDeletePayload(taskToDelete);
+            return new UserTaskDeletePayload(deletedTask);
         }
 
         public async Task<UserTaskAddPayload> AddUserTask(
@@ -53,6 +66,9 @@ namespace TimeManagerWebAPI.GraphQL
             [Service] UserTaskMockRepository taskRepo,
             [Service] UserMockRepository userRepo)
         {
+            UserTaskAddInputValidator validator = new();
+            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
+
             UserTask newTask = new()
             {
                 Id = Guid.NewGuid().ToString(),

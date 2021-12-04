@@ -24,13 +24,29 @@ namespace TimeManagerWebAPI
     {
         public IConfiguration Configuration { get; }
 
-        public Startup(IConfiguration configuration)
+        public IWebHostEnvironment Environment { get; }
+
+        public Startup(IConfiguration configuration, IWebHostEnvironment environment)
         {
             Configuration = configuration;
+            Environment = environment;
         }
 
         public void ConfigureServices(IServiceCollection services)
         {
+            string corsOrigin = Environment.IsDevelopment()
+                ? @"http://localhost:3000"
+                : null;
+
+            services.AddCors(options =>
+            {
+                options.AddPolicy("Default", 
+                    builder => builder
+                        .WithOrigins(corsOrigin)
+                        .AllowAnyHeader()
+                        .AllowAnyMethod());
+            });
+
             services.AddPooledDbContextFactory<TimeManagerDbContext>(options =>
             {
                 options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=time-manager;Trusted_Connection=True;");
@@ -78,6 +94,8 @@ namespace TimeManagerWebAPI
                     GraphQLEndPoint = "/graphql"
                 }, "/graphql-voyager");
             }
+
+            app.UseCors("Default");
 
             app.UseRouting();
 
