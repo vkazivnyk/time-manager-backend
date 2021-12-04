@@ -5,14 +5,21 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using AspNetCoreRateLimit;
 using GraphQL.Server.Ui.Voyager;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using TimeManageData.DbContexts;
+using TimeManageData.Models;
 using TimeManageData.Repositories;
+using TimeManagerServices.Auth;
 using TimeManagerWebAPI.GraphQL;
 using TimeManagerWebAPI.GraphQL.ErrorFilters;
 using TimeManagerWebAPI.GraphQL.Tasks;
@@ -40,7 +47,7 @@ namespace TimeManagerWebAPI
 
             services.AddCors(options =>
             {
-                options.AddPolicy("Default", 
+                options.AddPolicy("Default",
                     builder => builder
                         .WithOrigins(corsOrigin)
                         .AllowAnyHeader()
@@ -49,7 +56,11 @@ namespace TimeManagerWebAPI
 
             services.AddPooledDbContextFactory<TimeManagerDbContext>(options =>
             {
-                options.UseSqlServer(@"Server=(localdb)\mssqllocaldb;Database=time-manager;Trusted_Connection=True;");
+                string connectionString = Environment.IsDevelopment()
+                    ? Configuration["LocalConnection"]
+                    : Configuration["RemoteConnection"];
+
+                options.UseSqlServer(connectionString);
             });
 
             services.AddScoped(p => p.GetRequiredService<IDbContextFactory<TimeManagerDbContext>>().CreateDbContext());
@@ -72,9 +83,51 @@ namespace TimeManagerWebAPI
                 .AddType<UserTaskDeletePayloadType>()
                 .AddType<ApplicationUserType>()
                 .AddFiltering()
-                .AddSorting();
+                .AddSorting()
+                .AddAuthorization();
 
             services.AddErrorFilter<GraphQLErrorFilter>();
+
+            services.AddControllers();
+
+            services
+                .AddIdentity<ApplicationUser, IdentityRole>(options =>
+                {
+                    options.Password.RequiredLength = 6;
+                    options.Password.RequireDigit = true;
+                })
+                .AddEntityFrameworkStores<TimeManagerDbContext>();
+
+            string signingKeyPhrase = Configuration["SigningKeyPhrase"];
+            SymmetricSecurityKey signingKey = new(Encoding.UTF8.GetBytes(signingKeyPhrase));
+
+            services
+                .AddAuthentication(options =>
+                {
+                    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+                    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                })
+                .AddJwtBearer(config =>
+                {
+                    config.RequireHttpsMetadata = true;
+                    config.SaveToken = true;
+                    config.TokenValidationParameters = new TokenValidationParameters
+                    {
+                        IssuerSigningKey = signingKey,
+                        ValidateAudience = false,
+                        ValidateIssuer = false,
+                        ValidateIssuerSigningKey = true
+                    };
+                });
+
+            services.AddScoped<JwtTokenCreator>();
+
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("Auth", policy => policy.RequireClaim(JwtRegisteredClaimNames.Typ, "Auth"));
+            });
+
+            services.AddHttpContextAccessor();
 
             services.AddMemoryCache();
 
@@ -103,9 +156,14 @@ namespace TimeManagerWebAPI
 
             app.UseIpRateLimiting();
 
+            app.UseAuthentication();
+
+            app.UseAuthorization();
+
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapGraphQL();
+                endpoints.MapControllers();
             });
         }
     }
