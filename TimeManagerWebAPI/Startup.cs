@@ -95,6 +95,9 @@ namespace TimeManagerWebAPI
                 {
                     options.Password.RequiredLength = 6;
                     options.Password.RequireDigit = true;
+                    options.Password.RequireNonAlphanumeric = false;
+                    options.Password.RequireLowercase = false;
+                    options.Password.RequireUppercase = false;
                 })
                 .AddEntityFrameworkStores<TimeManagerDbContext>();
 

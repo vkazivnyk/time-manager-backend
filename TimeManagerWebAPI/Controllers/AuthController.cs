@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 using TimeManageData.Models;
 using TimeManagerServices.Auth;
 using TimeManagerWebAPI.Dtos.Auth;
+using TimeManagerWebAPI.Extensions;
+using TimeManagerWebAPI.Validators.Auth;
+using SignInResult = Microsoft.AspNetCore.Identity.SignInResult;
 
 namespace TimeManagerWebAPI.Controllers
 {
@@ -33,24 +36,46 @@ namespace TimeManagerWebAPI.Controllers
             _contextAccessor = contextAccessor;
             _tokenCreator = tokenCreator;
         }
-        
+
         [Route("register")]
         [HttpPost]
         public async Task<IActionResult> Register([FromBody] RegisterUserInput input)
         {
+            RegisterUserInputValidator validator = new();
+            IEnumerable<string> validationResult = await validator.ValidateAndGetStringsAsync(input);
+
+            if (validationResult is not null)
+            {
+                return BadRequest(new { errors = validationResult });
+            }
+
             ApplicationUser newUser = new()
             {
                 UserName = input.Username,
                 Email = input.Email
             };
 
-            IdentityResult result = await _userManager.CreateAsync(newUser, input.Password).ConfigureAwait(false);
+            if (_userManager.Users.Any(u => u.UserName == input.Username || u.Email == input.Email))
+            {
+                return BadRequest(new { errors = new[] { ErrorMessages.UserExists } });
+            }
 
-            await _signInManager.PasswordSignInAsync(newUser, input.Password, false, false).ConfigureAwait(false);
+            IdentityResult result = await _userManager
+                .CreateAsync(newUser, input.Password)
+                .ConfigureAwait(false);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { errors = new[] { ErrorMessages.CredentialsNotValid } });
+            }
+
+            await _signInManager
+                .PasswordSignInAsync(newUser, input.Password, false, false)
+                .ConfigureAwait(false);
 
             var (authToken, _) = _tokenCreator.CreateAuthToken(newUser);
 
-            LoginUserPayload payload = new (authToken, newUser.UserName, newUser.Email);
+            LoginUserPayload payload = new(authToken, newUser.UserName, newUser.Email);
 
             return Ok(payload);
         }
@@ -59,11 +84,31 @@ namespace TimeManagerWebAPI.Controllers
         [HttpPost]
         public async Task<IActionResult> Login([FromBody] LoginUserInput input)
         {
+            LoginUserInputValidator validator = new();
+            IEnumerable<string> validationResult = await validator.ValidateAndGetStringsAsync(input);
+
+            if (validationResult is not null)
+            {
+                return BadRequest(new { errors = validationResult });
+            }
+
             string username = input.Username;
 
             ApplicationUser user = await _userManager.FindByNameAsync(username);
 
-            await _signInManager.PasswordSignInAsync(user, input.Password, false, false).ConfigureAwait(false);
+            if (user is null)
+            {
+                return BadRequest(new { errors = new[] { ErrorMessages.CredentialsNotValid } });
+            }
+
+            SignInResult result = await _signInManager
+                .PasswordSignInAsync(user, input.Password, false, false)
+                .ConfigureAwait(false);
+
+            if (!result.Succeeded)
+            {
+                return BadRequest(new { errors = new[] { ErrorMessages.CredentialsNotValid } });
+            }
 
             var (authToken, _) = _tokenCreator.CreateAuthToken(user);
 
