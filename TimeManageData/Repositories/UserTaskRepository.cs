@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeManageData.DbContexts;
@@ -24,6 +25,9 @@ namespace TimeManageData.Repositories
         public UserTask Update(UserTask item) => _dbContext.Update(item).Entity;
 
         public UserTask Delete(string id) => _dbContext.Remove(Find(id)).Entity;
+
+        public List<UserTask> Where(Func<UserTask, bool> predicate) =>
+            _dbContext.UserTasks.Where(predicate).ToList();
 
         public List<UserTask> GetAll() => _dbContext.UserTasks.ToList();
     }

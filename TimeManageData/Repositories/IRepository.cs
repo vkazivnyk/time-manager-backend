@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace TimeManageData.Repositories
@@ -10,6 +11,7 @@ namespace TimeManageData.Repositories
         public T Find(string id);
         public T Update(T item);
         public T Delete(string id);
+        public List<T> Where(Func<T, bool> predicate);
         public List<T> GetAll();
     }
 }

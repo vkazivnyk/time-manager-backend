@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using TimeManageData.DbContexts;
@@ -24,6 +25,9 @@ namespace TimeManageData.Repositories
         public ApplicationUser Update(ApplicationUser item) => _dbContext.Update(item).Entity;
 
         public ApplicationUser Delete(string id) => _dbContext.Remove(Find(id)).Entity;
+
+        public List<ApplicationUser> Where(Func<ApplicationUser, bool> predicate) =>
+            _dbContext.Users.Where(predicate).ToList();
 
         public List<ApplicationUser> GetAll() => _dbContext.Users.ToList();
     }

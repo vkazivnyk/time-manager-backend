@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using HotChocolate;
+using HotChocolate.AspNetCore.Authorization;
 using HotChocolate.Data;
+using Microsoft.AspNetCore.Http;
 using TimeManageData.DbContexts;
 using TimeManageData.Models;
 using TimeManageData.Repositories;
@@ -16,19 +18,23 @@ namespace TimeManagerWebAPI.GraphQL
     [GraphQLDescription("Represents task mutations.")]
     public class Mutation
     {
+        [Authorize(Policy = "Auth")]
         public async Task<UserTaskPutPayload> PutUserTask(
             UserTaskPutInput input,
-            [Service] IRepository<UserTask> taskRepo)
+            [Service] IRepository<UserTask> taskRepo,
+            [Service] IHttpContextAccessor contextAccessor)
         {
+            UserTaskPutInputValidator validator = new();
+            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
+
+            string userId = contextAccessor.HttpContext!.User.Claims.First().Value;
+
             UserTask taskToPut = taskRepo.GetAll().FirstOrDefault(t => t.Id == input?.Id);
 
-            if (taskToPut is null)
+            if (taskToPut is null || taskToPut.UserId != userId)
             {
                 throw new GraphQLException(ErrorMessages.CantUpdateUserTask);
             }
-
-            UserTaskPutInputValidator validator = new();
-            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
 
             taskToPut.Name = input.Name;
             taskToPut.Deadline = input.Deadline;
@@ -40,19 +46,23 @@ namespace TimeManagerWebAPI.GraphQL
             return new UserTaskPutPayload(taskToPut);
         }
 
+        [Authorize(Policy = "Auth")]
         public async Task<UserTaskDeletePayload> DeleteUserTask(
             UserTaskDeleteInput input,
-            [Service] IRepository<UserTask> userRepo)
+            [Service] IRepository<UserTask> userRepo,
+            [Service] IHttpContextAccessor contextAccessor)
         {
+            UserTaskDeleteInputValidator validator = new();
+            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
+
+            string userId = contextAccessor.HttpContext!.User.Claims.First().Value;
+
             UserTask taskToDelete = userRepo.GetAll().FirstOrDefault(t => t.Id == input.Id);
 
-            if (taskToDelete is null)
+            if (taskToDelete is null || taskToDelete.UserId != userId)
             {
                 throw new GraphQLException(ErrorMessages.CantDeleteUserTask);
             }
-
-            UserTaskDeleteInputValidator validator = new();
-            await validator.ValidateAndThrowGraphQLExceptionAsync(input);
 
             UserTask deletedTask = userRepo.Delete(taskToDelete.Id);
 
@@ -61,23 +71,25 @@ namespace TimeManagerWebAPI.GraphQL
             return new UserTaskDeletePayload(deletedTask);
         }
 
+        [Authorize(Policy = "Auth")]
         public async Task<UserTaskAddPayload> AddUserTask(
             UserTaskAddInput input,
             [Service] IRepository<UserTask> taskRepo,
-            [Service] IRepository<ApplicationUser> userRepo)
+            [Service] IHttpContextAccessor contextAccessor)
         {
             UserTaskAddInputValidator validator = new();
             await validator.ValidateAndThrowGraphQLExceptionAsync(input);
 
+            string userId = contextAccessor.HttpContext!.User.Claims.First().Value;
+
             UserTask newTask = new()
             {
                 Id = Guid.NewGuid().ToString(),
-                User = userRepo.Find("afdfauiewhfkj"),
                 Deadline = input.Deadline,
                 Name = input.Name,
                 Importance = input.Importance,
                 Difficulty = input.Difficulty,
-                UserId = "afdfauiewhfkj"
+                UserId = userId
             };
 
             taskRepo.Create(newTask);
