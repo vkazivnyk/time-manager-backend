@@ -77,7 +77,7 @@ namespace TimeManageData.Repositories
                             Deadline = DateTime.Now.AddDays(20),
                             TotalSeconds = 236458,
                             Name = "ThirdTask",
-                            Difficulty = 4,
+                            Difficulty = 1,
                             User = new ApplicationUser()
                             {
                                 Id = "bys54btswbrsa43vt",
