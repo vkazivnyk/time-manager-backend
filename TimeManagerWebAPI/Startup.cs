@@ -65,9 +65,9 @@ namespace TimeManagerWebAPI
 
             services.AddScoped(p => p.GetRequiredService<IDbContextFactory<TimeManagerDbContext>>().CreateDbContext());
 
-            services.AddSingleton<UserTaskMockRepository>();
+            services.AddSingleton<IRepository<UserTask>, UserTaskMockRepository>();
 
-            services.AddSingleton<UserMockRepository>();
+            services.AddSingleton<IRepository<ApplicationUser>, UserMockRepository>();
 
             services
                 .AddGraphQLServer()

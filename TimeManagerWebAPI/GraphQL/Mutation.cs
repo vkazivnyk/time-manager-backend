@@ -18,7 +18,7 @@ namespace TimeManagerWebAPI.GraphQL
     {
         public async Task<UserTaskPutPayload> PutUserTask(
             UserTaskPutInput input,
-            [Service] UserTaskMockRepository taskRepo)
+            [Service] IRepository<UserTask> taskRepo)
         {
             UserTask taskToPut = taskRepo.GetAll().FirstOrDefault(t => t.Id == input?.Id);
 
@@ -42,7 +42,7 @@ namespace TimeManagerWebAPI.GraphQL
 
         public async Task<UserTaskDeletePayload> DeleteUserTask(
             UserTaskDeleteInput input,
-            [Service] UserTaskMockRepository userRepo)
+            [Service] IRepository<UserTask> userRepo)
         {
             UserTask taskToDelete = userRepo.GetAll().FirstOrDefault(t => t.Id == input.Id);
 
@@ -63,8 +63,8 @@ namespace TimeManagerWebAPI.GraphQL
 
         public async Task<UserTaskAddPayload> AddUserTask(
             UserTaskAddInput input,
-            [Service] UserTaskMockRepository taskRepo,
-            [Service] UserMockRepository userRepo)
+            [Service] IRepository<UserTask> taskRepo,
+            [Service] IRepository<ApplicationUser> userRepo)
         {
             UserTaskAddInputValidator validator = new();
             await validator.ValidateAndThrowGraphQLExceptionAsync(input);

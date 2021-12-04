@@ -17,7 +17,7 @@ namespace TimeManagerWebAPI.GraphQL
         [UseFiltering]
         [UseSorting]
         [GraphQLDescription("Represents the query for retrieving user's tasks.")]
-        public IQueryable<UserTask> GetTask([Service] UserTaskMockRepository taskRepo)
+        public IQueryable<UserTask> GetTask([Service] IRepository<UserTask> taskRepo)
         {
             return taskRepo.GetAll().AsQueryable();
         }
