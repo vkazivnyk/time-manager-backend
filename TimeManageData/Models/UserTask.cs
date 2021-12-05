@@ -31,5 +31,8 @@ namespace TimeManageData.Models
         
         [NotMapped]
         public double PriorityEvaluation { get; set; }
+
+        [NotMapped]
+        public int DeadlineMissEvaluation { get; set; }
     }
 }
