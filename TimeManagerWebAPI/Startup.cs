@@ -43,7 +43,7 @@ namespace TimeManagerWebAPI
         {
             string corsOrigin = Environment.IsDevelopment()
                 ? @"http://localhost:3000"
-                : null;
+                : @"https://time-manager.azurewebsites.net";
 
             services.AddCors(options =>
             {

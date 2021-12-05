@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using TimeManageData.DbContexts;
 using TimeManageData.Models;
 using TimeManageData.Repositories;
+using TimeManagerServices.FuzzyLogic;
 using TimeManagerWebAPI.Extensions;
 using TimeManagerWebAPI.GraphQL.Tasks;
 using TimeManagerWebAPI.Validators;
@@ -41,6 +42,11 @@ namespace TimeManagerWebAPI.GraphQL
             taskToPut.Importance = input.Importance;
             taskToPut.Difficulty = input.Difficulty;
 
+            taskToPut.PriorityEvaluation = UserTaskPriorityEvaluator.PriorityEvaluator(taskToPut);
+            taskToPut.TimeEvaluation = UserTaskPriorityEvaluator.TimeEvaluator(taskToPut);
+            //TODO: Replace with call
+            taskToPut.DeadlineMissEvaluation = 50;
+
             await taskRepo.SaveChangesAsync().ConfigureAwait(false);
 
             return new UserTaskPutPayload(taskToPut);
@@ -65,6 +71,11 @@ namespace TimeManagerWebAPI.GraphQL
             }
 
             UserTask deletedTask = userRepo.Delete(taskToDelete.Id);
+
+            deletedTask.PriorityEvaluation = UserTaskPriorityEvaluator.PriorityEvaluator(deletedTask);
+            deletedTask.TimeEvaluation = UserTaskPriorityEvaluator.TimeEvaluator(deletedTask);
+            //TODO: Replace with call
+            deletedTask.DeadlineMissEvaluation = 50;
 
             await userRepo.SaveChangesAsync();
 
@@ -93,6 +104,11 @@ namespace TimeManagerWebAPI.GraphQL
             };
 
             taskRepo.Create(newTask);
+
+            newTask.PriorityEvaluation = UserTaskPriorityEvaluator.PriorityEvaluator(newTask);
+            newTask.TimeEvaluation = UserTaskPriorityEvaluator.TimeEvaluator(newTask);
+            //TODO: Replace with call
+            newTask.DeadlineMissEvaluation = 50;
 
             await taskRepo.SaveChangesAsync();
 
