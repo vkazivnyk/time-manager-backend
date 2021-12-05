@@ -12,7 +12,6 @@ namespace TimeManagerServices.FuzzyLogic
 
         public static double TimeEvaluator(UserTask userTask)
         {
-            Random rand = new Random();
             RuleInferenceEngine rie = new RuleInferenceEngine();
 
             FuzzySet time = new FuzzySet("Time", 1, 9, 0.1);
@@ -42,11 +41,98 @@ namespace TimeManagerServices.FuzzyLogic
             rule.Consequent = new Clause(time, "Is", "Low");
             rie.AddRule(rule);
 
-            difficulty.X = (userTask.Difficulty + 1) * 2 + rand.NextDouble()*2 - 1;
+            difficulty.X = (userTask.Difficulty + 1) * 2;
             
             rie.Infer(time);
 
             return time.X;
+        }
+
+        public static int ChanceEvaluator(UserTask userTask)
+        {
+            RuleInferenceEngine rie = new RuleInferenceEngine();
+
+            FuzzySet chance = new FuzzySet("Chance", 1, 100, 0.1);
+            chance.AddMembership("Low", new FuzzyReverseGrade(1, 15));
+            chance.AddMembership("LowMedium", new FuzzyTriangle(10, 20 ,30));
+            chance.AddMembership("Medium", new FuzzyTriangle(25, 50, 75));
+            chance.AddMembership("MediumHigh", new FuzzyTriangle(70, 80, 90));
+            chance.AddMembership("High", new FuzzyGrade(85, 100));
+            rie.AddFuzzySet(chance.Name, chance);
+            
+            FuzzySet terminate = new FuzzySet("Terminate", 0, 60*24*10, 100);
+            terminate.AddMembership("High", new FuzzyReverseGrade(0, 60*24*4));
+            terminate.AddMembership("Medium", new FuzzyTriangle(60*24*3, 60*24*5, 60*24*7));
+            terminate.AddMembership("Low", new FuzzyGrade(60*24*6, 60*24*10));
+            rie.AddFuzzySet(terminate.Name, terminate);
+            
+            FuzzySet difficulty = new FuzzySet("Difficulty", 2, 10, 0.1);
+            difficulty.AddMembership("Low", new FuzzyReverseGrade(2, 5));
+            difficulty.AddMembership("Medium", new FuzzyTriangle(4, 6, 8));
+            difficulty.AddMembership("High", new FuzzyGrade(7, 10));
+            rie.AddFuzzySet(difficulty.Name, difficulty);
+
+            Rule rule = new Rule("Rule 1");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.Consequent = new Clause(chance, "Is", "Low");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 2");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.Consequent = new Clause(chance, "Is", "LowMedium");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 3");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.Consequent = new Clause(chance, "Is", "Medium");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 4");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.Consequent = new Clause(chance, "Is", "LowMedium");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 5");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.Consequent = new Clause(chance, "Is", "Medium");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 6");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
+            rule.Consequent = new Clause(chance, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 7");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.Consequent = new Clause(chance, "Is", "Medium");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 8");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.Consequent = new Clause(chance, "Is", "MediumHigh");
+            rie.AddRule(rule);
+            
+            rule = new Rule("Rule 9");
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.Consequent = new Clause(chance, "Is", "High");
+            rie.AddRule(rule);
+            
+            terminate.X = CalculateMinutes(userTask.Deadline-DateTime.Now);
+
+            difficulty.X = (userTask.Difficulty + 1)*2;
+
+            rie.Infer(chance);
+            
+            return (int)chance.X;
         }
 
         public static double PriorityEvaluator(UserTask userTask)
@@ -63,10 +149,10 @@ namespace TimeManagerServices.FuzzyLogic
             priority.AddMembership("VeryHigh", new FuzzyGrade(10,12));
             rie.AddFuzzySet(priority.Name, priority);
 
-            FuzzySet terminate = new FuzzySet("Terminate", 0, 60*24*30, 100);
-            terminate.AddMembership("High", new FuzzyReverseGrade(0, 60*24*12));
-            terminate.AddMembership("Medium", new FuzzyTriangle(60*24*10, 60*24*15, 60*24*20));
-            terminate.AddMembership("Low", new FuzzyGrade(60*24*18, 60*24*30));
+            FuzzySet terminate = new FuzzySet("Terminate", 0, 60*24*10, 100);
+            terminate.AddMembership("High", new FuzzyReverseGrade(0, 60*24*4));
+            terminate.AddMembership("Medium", new FuzzyTriangle(60*24*3, 60*24*5, 60*24*7));
+            terminate.AddMembership("Low", new FuzzyGrade(60*24*6, 60*24*10));
             rie.AddFuzzySet(terminate.Name, terminate);
             
             FuzzySet difficulty = new FuzzySet("Difficulty", 2, 10, 0.1);
