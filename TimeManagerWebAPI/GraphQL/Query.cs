@@ -33,8 +33,7 @@ namespace TimeManagerWebAPI.GraphQL
             {
                 task.TimeEvaluation = UserTaskPriorityEvaluator.TimeEvaluator(task);
                 task.PriorityEvaluation = UserTaskPriorityEvaluator.PriorityEvaluator(task);
-                //TODO: Replace with call
-                task.DeadlineMissEvaluation = 50;
+                task.DeadlineMissEvaluation = UserTaskPriorityEvaluator.ChanceEvaluator(task);
             }
 
             return allTasks.AsQueryable();
