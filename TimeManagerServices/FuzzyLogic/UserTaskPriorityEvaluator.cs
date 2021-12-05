@@ -54,8 +54,9 @@ namespace TimeManagerServices.FuzzyLogic
 
             FuzzySet chance = new FuzzySet("Chance", 1, 100, 0.1);
             chance.AddMembership("Low", new FuzzyReverseGrade(1, 25));
-            chance.AddMembership("LowMedium", new FuzzyTriangle(20, 40 ,60));
-            chance.AddMembership("MediumHigh", new FuzzyTriangle(40, 60, 80));
+            chance.AddMembership("LowMedium", new FuzzyTriangle(20, 30 ,40));
+            chance.AddMembership("Medium", new FuzzyTriangle(30, 50 ,70));
+            chance.AddMembership("MediumHigh", new FuzzyTriangle(60, 70, 80));
             chance.AddMembership("High", new FuzzyGrade(75, 100));
             rie.AddFuzzySet(chance.Name, chance);
             
