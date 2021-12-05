@@ -53,11 +53,10 @@ namespace TimeManagerServices.FuzzyLogic
             RuleInferenceEngine rie = new RuleInferenceEngine();
 
             FuzzySet chance = new FuzzySet("Chance", 1, 100, 0.1);
-            chance.AddMembership("Low", new FuzzyReverseGrade(1, 15));
-            chance.AddMembership("LowMedium", new FuzzyTriangle(10, 20 ,30));
-            chance.AddMembership("Medium", new FuzzyTriangle(25, 50, 75));
-            chance.AddMembership("MediumHigh", new FuzzyTriangle(70, 80, 90));
-            chance.AddMembership("High", new FuzzyGrade(85, 100));
+            chance.AddMembership("Low", new FuzzyReverseGrade(1, 25));
+            chance.AddMembership("LowMedium", new FuzzyTriangle(20, 40 ,60));
+            chance.AddMembership("MediumHigh", new FuzzyTriangle(40, 60, 80));
+            chance.AddMembership("High", new FuzzyGrade(75, 100));
             rie.AddFuzzySet(chance.Name, chance);
             
             FuzzySet terminate = new FuzzySet("Terminate", 0, 60*24*10, 100);
@@ -81,25 +80,25 @@ namespace TimeManagerServices.FuzzyLogic
             rule = new Rule("Rule 2");
             rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
-            rule.Consequent = new Clause(chance, "Is", "LowMedium");
+            rule.Consequent = new Clause(chance, "Is", "Low");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 3");
             rule.AddAntecedent(new Clause(terminate, "Is", "High"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
-            rule.Consequent = new Clause(chance, "Is", "Medium");
+            rule.Consequent = new Clause(chance, "Is", "LowMedium");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 4");
             rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
-            rule.Consequent = new Clause(chance, "Is", "LowMedium");
+            rule.Consequent = new Clause(chance, "Is", "Low");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 5");
             rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
-            rule.Consequent = new Clause(chance, "Is", "Medium");
+            rule.Consequent = new Clause(chance, "Is", "LowMedium");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 6");
@@ -111,7 +110,7 @@ namespace TimeManagerServices.FuzzyLogic
             rule = new Rule("Rule 7");
             rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
-            rule.Consequent = new Clause(chance, "Is", "Medium");
+            rule.Consequent = new Clause(chance, "Is", "LowMedium");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 8");
