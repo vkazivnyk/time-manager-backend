@@ -53,17 +53,18 @@ namespace TimeManagerServices.FuzzyLogic
             RuleInferenceEngine rie = new RuleInferenceEngine();
 
             FuzzySet chance = new FuzzySet("Chance", 1, 100, 0.1);
-            chance.AddMembership("Low", new FuzzyReverseGrade(1, 25));
-            chance.AddMembership("LowMedium", new FuzzyTriangle(20, 30 ,40));
-            chance.AddMembership("Medium", new FuzzyTriangle(30, 50 ,70));
-            chance.AddMembership("MediumHigh", new FuzzyTriangle(60, 70, 80));
-            chance.AddMembership("High", new FuzzyGrade(75, 100));
+            chance.AddMembership("Low", new FuzzyReverseGrade(1, 10));
+            chance.AddMembership("LowMedium", new FuzzyTriangle(7, 13 ,30));
+            chance.AddMembership("MediumHigh", new FuzzyTriangle(25, 37, 50));
+            chance.AddMembership("High", new FuzzyTriangle(40, 60,80));
+            chance.AddMembership("VeryHigh", new FuzzyGrade(75, 100));
             rie.AddFuzzySet(chance.Name, chance);
             
             FuzzySet terminate = new FuzzySet("Terminate", 0, 60*24*10, 100);
-            terminate.AddMembership("High", new FuzzyReverseGrade(0, 60*24*4));
-            terminate.AddMembership("Medium", new FuzzyTriangle(60*24*3, 60*24*5, 60*24*7));
-            terminate.AddMembership("Low", new FuzzyGrade(60*24*6, 60*24*10));
+            terminate.AddMembership("MegaHigh", new FuzzyReverseGrade(0, 60*24*2));
+            terminate.AddMembership("High", new FuzzyTriangle(60*24*1, 60*24*3, 60*24*5));
+            terminate.AddMembership("Medium", new FuzzyTriangle(60*24*4, 60*24*7, 60*24*10));
+            terminate.AddMembership("Low", new FuzzyGrade(60*24*8, 60*24*10));
             rie.AddFuzzySet(terminate.Name, terminate);
             
             FuzzySet difficulty = new FuzzySet("Difficulty", 2, 10, 0.1);
@@ -74,56 +75,42 @@ namespace TimeManagerServices.FuzzyLogic
 
             Rule rule = new Rule("Rule 1");
             rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
-            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
             rule.Consequent = new Clause(chance, "Is", "Low");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 2");
-            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
             rule.Consequent = new Clause(chance, "Is", "Low");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 3");
-            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
-            rule.AddAntecedent(new Clause(difficulty, "Is", "Low"));
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
             rule.Consequent = new Clause(chance, "Is", "LowMedium");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 4");
-            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
-            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
-            rule.Consequent = new Clause(chance, "Is", "Low");
+            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.Consequent = new Clause(chance, "Is", "MediumHigh");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 5");
-            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
+            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
-            rule.Consequent = new Clause(chance, "Is", "LowMedium");
+            rule.Consequent = new Clause(chance, "Is", "MediumHigh");
             rie.AddRule(rule);
             
             rule = new Rule("Rule 6");
             rule.AddAntecedent(new Clause(terminate, "Is", "High"));
-            rule.AddAntecedent(new Clause(difficulty, "Is", "Medium"));
-            rule.Consequent = new Clause(chance, "Is", "MediumHigh");
-            rie.AddRule(rule);
-            
-            rule = new Rule("Rule 7");
-            rule.AddAntecedent(new Clause(terminate, "Is", "Low"));
-            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
-            rule.Consequent = new Clause(chance, "Is", "LowMedium");
-            rie.AddRule(rule);
-            
-            rule = new Rule("Rule 8");
-            rule.AddAntecedent(new Clause(terminate, "Is", "Medium"));
-            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
-            rule.Consequent = new Clause(chance, "Is", "MediumHigh");
-            rie.AddRule(rule);
-            
-            rule = new Rule("Rule 9");
-            rule.AddAntecedent(new Clause(terminate, "Is", "High"));
             rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
             rule.Consequent = new Clause(chance, "Is", "High");
+            rie.AddRule(rule);
+
+            rule = new Rule("Rule 7");
+            rule.AddAntecedent(new Clause(terminate, "Is", "MegaHigh"));
+            rule.AddAntecedent(new Clause(difficulty, "Is", "High"));
+            rule.Consequent = new Clause(chance, "Is", "VeryHigh");
             rie.AddRule(rule);
             
             terminate.X = CalculateMinutes(userTask.Deadline-DateTime.Now);
