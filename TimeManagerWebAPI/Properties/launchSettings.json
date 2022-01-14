@@ -13,11 +13,12 @@
       "launchBrowser": true,
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "VaultUri": "https://timemanagerkeyvault.vault.azure.net/",
+        "VaultUri": "https://timemanagerwebapivault.vault.azure.net/",
         "AZURE_USERNAME": "nikkv.ottf@gmail.com",
         "AZURE_CLIENT_ID": "932a60b4-7be4-485b-bf4a-ca404fe65859",
         "AZURE_TENANT_ID": "93679d72-dcdb-4707-9176-d0451342e510",
-        "AZURE_CLIENT_SECRET": "6iS7Q~ek2kaxiLyojdQxNv8M8XpIpN2siwH2n"
+        "AZURE_CLIENT_SECRET": ".xP7Q~Ycqm8eBENfmw7r4vGIAY_KqsFjFb6UP"
+
       }
     },
     "TimeManagerWebAPI": {
@@ -27,11 +28,11 @@
       "applicationUrl": "https://localhost:5001;http://localhost:5000",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development",
-        "VaultUri": "https://timemanagerkeyvault.vault.azure.net/",
+        "VaultUri": "https://timemanagerwebapivault.vault.azure.net/",
         "AZURE_USERNAME": "nikkv.ottf@gmail.com",
         "AZURE_CLIENT_ID": "932a60b4-7be4-485b-bf4a-ca404fe65859",
         "AZURE_TENANT_ID": "93679d72-dcdb-4707-9176-d0451342e510",
-        "AZURE_CLIENT_SECRET": "6iS7Q~ek2kaxiLyojdQxNv8M8XpIpN2siwH2nn"
+        "AZURE_CLIENT_SECRET": ".xP7Q~Ycqm8eBENfmw7r4vGIAY_KqsFjFb6UP"
       }
     }
   }

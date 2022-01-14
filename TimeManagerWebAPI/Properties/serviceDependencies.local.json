@@ -1,7 +1,7 @@
 {
   "dependencies": {
     "secrets1": {
-      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/TimeManagerKeyVault",
+      "resourceId": "/subscriptions/[parameters('subscriptionId')]/resourceGroups/[parameters('resourceGroupName')]/providers/Microsoft.KeyVault/vaults/TimeManagerWebAPIvault",
       "type": "secrets.keyVault",
       "connectionId": "VaultUri",
       "secretStore": null
